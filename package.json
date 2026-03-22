@@ -139,7 +139,7 @@
     "*.{md,yaml,yml}": "prettier --write"
   },
   "scripts": {
-    "dev": "node scripts/dev.js",
+    "dev": "node dev.js",
     "build": "turbo run build --concurrency=100% --no-daemon",
     "lint": "eslint --ignore-path .eslintignore --ext .js,.ts,.tsx .",
     "lint:path": "eslint --ignore-path .eslintignore --ext .js,.ts,.tsx",

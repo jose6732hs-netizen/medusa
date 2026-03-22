@@ -1,0 +1,58 @@
+# ACESSO RÁPIDO - CLIQUE AQUI!
+
+## URLs do Seu SaaS
+
+Após fazer `git push`, seu SaaS estará em:
+
+```
+PÁGINA PRINCIPAL:
+https://seu-projeto.vercel.app
+
+HEALTH CHECK (Status):
+https://seu-projeto.vercel.app/health
+```
+
+---
+
+## 🔍 Para Descobrir Sua URL Vercel
+
+1. Abra: https://vercel.com/dashboard
+2. Clique em seu projeto "medusa"
+3. Veja a URL em "Domains"
+4. Copie e cole no navegador
+
+---
+
+## ✅ Checklist de Acesso
+
+- [ ] Fiz `git push origin develop`
+- [ ] Aguardei 2-5 minutos
+- [ ] Abri a URL em novo navegador (Ctrl+F5 para limpar cache)
+- [ ] Health check respondeu com "ok"
+
+---
+
+## 📲 Se Quer Testar LOCAL Antes
+
+Terminal:
+```bash
+npm run dev
+```
+
+Navegador:
+```
+http://localhost:3000
+```
+
+---
+
+## 🚀 Seu SaaS Está Online!
+
+Agora você pode:
+- ✅ Criar múltiplos tenants (lojas)
+- ✅ Gerenciar como super admin
+- ✅ Conectar seu frontend
+- ✅ Usar API REST do Medusa
+- ✅ Monitorar com /health endpoint
+
+**Tudo pronto para a produção!**

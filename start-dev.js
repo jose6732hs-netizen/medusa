@@ -5,61 +5,59 @@
  * This script boots up the Medusa application with proper configuration
  */
 
+require("dotenv").config({ path: ".env.local" })
+
 const path = require("path")
-const getPort = require("get-port")
+const { bootstrap } = require("@medusajs/medusa/dist/loaders")
 const express = require("express")
-const { isObject } = require("@medusajs/framework/utils")
 
 async function startServer() {
   try {
-    console.log("[Medusa] Starting development server...")
+    console.log("[v0] Starting Medusa development server...")
     
     // Load environment variables
     const env = process.env
     
-    console.log("[Medusa] Environment:")
+    console.log("[v0] Configuration:")
     console.log(`  NODE_ENV: ${env.NODE_ENV || "development"}`)
-    console.log(`  DATABASE_URL: ${env.DATABASE_URL ? "configured" : "NOT SET"}`)
+    console.log(`  DATABASE_URL: ${env.DATABASE_URL ? "✓ configured" : "✗ NOT SET"}`)
     console.log(`  PORT: ${env.PORT || "9000"}`)
+    
+    if (!env.DATABASE_URL) {
+      throw new Error("DATABASE_URL environment variable is not set. Please check .env.local file.")
+    }
     
     const app = express()
     
-    // Load Medusa loaders
-    console.log("[Medusa] Loading Medusa framework...")
-    const loaders = require("@medusajs/medusa/dist/loaders").default
+    // Bootstrap Medusa
+    console.log("[v0] Initializing Medusa framework...")
     
-    const { container, shutdown } = await loaders({
-      directory: path.resolve(process.cwd()),
-      expressApp: app,
-      isTest: false,
-    })
+    const { container } = await bootstrap(
+      path.resolve(process.cwd()),
+      { app }
+    )
     
     // Get port
     const PORT = parseInt(env.PORT || "9000")
     
     // Start server
-    console.log("[Medusa] Starting Express server...")
+    console.log("[v0] Starting Express server...")
     return await new Promise((resolve, reject) => {
       const server = app
         .listen(PORT)
-        .on("error", async (err) => {
-          console.error("[Medusa] Server error:", err)
-          await shutdown()
+        .on("error", (err) => {
+          console.error("[v0] Server error:", err.message)
           reject(err)
         })
         .on("listening", () => {
           console.log(`\n✓ Medusa server running on http://localhost:${PORT}`)
-          console.log(`\nAdmin: http://localhost:7001`)
-          console.log(`Store: http://localhost:3000`)
-          console.log("\nPress Ctrl+C to stop\n")
+          console.log(`\n  Admin Dashboard: http://localhost:7001`)
+          console.log(`  Storefront: http://localhost:3000`)
+          console.log(`\nPress Ctrl+C to stop\n`)
           
           const gracefulShutdown = async () => {
-            console.log("\n[Medusa] Shutting down gracefully...")
-            await Promise.all([
-              new Promise(r => server.close(() => r())),
-              shutdown()
-            ])
-            console.log("[Medusa] Server stopped")
+            console.log("\n[v0] Shutting down gracefully...")
+            server.close()
             process.exit(0)
           }
           
@@ -70,16 +68,16 @@ async function startServer() {
         })
     })
   } catch (error) {
-    console.error("[Medusa] Failed to start server:", error.message)
-    console.error(error)
+    console.error("[v0] Failed to start server:", error.message)
+    if (error.stack) console.error(error.stack)
     process.exit(1)
   }
 }
 
 // Run if executed directly
 if (require.main === module) {
-  startServer().catch(error => {
-    console.error("Fatal error:", error)
+  startServer().catch((error) => {
+    console.error("[v0] Fatal error:", error)
     process.exit(1)
   })
 }

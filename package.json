@@ -139,7 +139,7 @@
     "*.{md,yaml,yml}": "prettier --write"
   },
   "scripts": {
-    "dev": "node start-dev.js",
+    "dev": "node dev.js",
     "build": "turbo run build --concurrency=100% --no-daemon",
     "lint": "eslint --ignore-path .eslintignore --ext .js,.ts,.tsx .",
     "lint:path": "eslint --ignore-path .eslintignore --ext .js,.ts,.tsx",
@@ -166,6 +166,7 @@
     "@changesets/cli": "^2.26.0",
     "@medusajs/framework": "workspace:^",
     "@medusajs/medusa": "workspace:^",
+    "dotenv": "^17.3.1",
     "import-from": "^3.0.0"
   },
   "resolutions": {

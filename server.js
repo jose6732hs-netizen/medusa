@@ -224,6 +224,6 @@ const server = http.createServer((_req, res) => {
   res.end(html)
 })
 
-server.listen(PORT, () => {
-  console.log(`Servidor rodando em http://localhost:${PORT}`)
+server.listen(PORT, "0.0.0.0", () => {
+  console.log(`ready - started server on 0.0.0.0:${PORT}, url: http://localhost:${PORT}`)
 })

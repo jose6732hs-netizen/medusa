@@ -1,0 +1,5 @@
+{
+  "buildCommand": "echo 'Build skipped'",
+  "devCommand": "node dev.js",
+  "installCommand": "yarn install"
+}

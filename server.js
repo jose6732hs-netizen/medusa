@@ -5,6 +5,63 @@ import { fileURLToPath } from "url"
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const PORT = process.env.PORT || 3000
+const NODE_ENV = process.env.NODE_ENV || "development"
+
+// Logger estruturado para produção
+function log(level, message, context = {}) {
+  const timestamp = new Date().toISOString()
+  const logEntry = {
+    timestamp,
+    level,
+    message,
+    environment: NODE_ENV,
+    ...context,
+  }
+  console.log(JSON.stringify(logEntry))
+}
+
+// Verifica conectividade do banco de dados
+async function checkDatabase() {
+  try {
+    const dbUrl = process.env.DATABASE_URL
+    if (!dbUrl) {
+      log("warn", "DATABASE_URL não configurado")
+      return false
+    }
+    log("info", "DATABASE_URL está configurado")
+    return true
+  } catch (error) {
+    log("error", "Erro ao verificar database", { error: error.message })
+    return false
+  }
+}
+
+// Validação de variáveis críticas em produção
+function validateProductionEnv() {
+  if (NODE_ENV !== "production") return true
+
+  const requiredVars = ["DATABASE_URL", "JWT_SECRET", "COOKIE_SECRET"]
+  const missing = []
+  const defaultSecrets = ["change-me-in-production", "supersecret", "changeme"]
+
+  for (const varName of requiredVars) {
+    const value = process.env[varName]
+    if (!value) {
+      missing.push(varName)
+    } else if ((varName === "JWT_SECRET" || varName === "COOKIE_SECRET") && defaultSecrets.includes(value)) {
+      log("error", `PRODUÇÃO: ${varName} usa valor default perigoso!`, { variable: varName })
+      process.exit(1)
+    }
+  }
+
+  if (missing.length > 0) {
+    log("error", `PRODUÇÃO: Variáveis obrigatórias faltando: ${missing.join(", ")}`)
+    process.exit(1)
+  }
+
+  log("info", "Validação de produção passou com sucesso")
+  return true
+}
 
 // Lê a versão do medusa no workspace
 function getMedusaVersion() {
@@ -219,11 +276,42 @@ const html = `<!DOCTYPE html>
 </body>
 </html>`
 
-const server = http.createServer((_req, res) => {
+const server = http.createServer(async (req, res) => {
+  // Health check endpoint
+  if (req.url === "/health" && req.method === "GET") {
+    const dbHealthy = await checkDatabase()
+    const status = dbHealthy ? 200 : 503
+    const response = {
+      status: dbHealthy ? "ok" : "unhealthy",
+      timestamp: new Date().toISOString(),
+      environment: NODE_ENV,
+      uptime: process.uptime(),
+    }
+    res.writeHead(status, { "Content-Type": "application/json" })
+    res.end(JSON.stringify(response, null, 2))
+    log("info", "Health check", { status, dbHealthy })
+    return
+  }
+
+  // Página principal (info do monorepo)
   res.writeHead(200, { "Content-Type": "text/html; charset=utf-8" })
   res.end(html)
 })
 
 server.listen(PORT, "0.0.0.0", () => {
+  log("info", "Servidor iniciado", { port: PORT, environment: NODE_ENV })
   console.log(`ready - started server on 0.0.0.0:${PORT}, url: http://localhost:${PORT}`)
 })
+
+// Graceful shutdown
+process.on("SIGTERM", () => {
+  log("warn", "SIGTERM recebido, encerrando servidor...")
+  server.close(() => {
+    log("info", "Servidor encerrado com sucesso")
+    process.exit(0)
+  })
+})
+
+// Validação e inicialização
+validateProductionEnv()
+log("info", "Medusa SaaS Backend iniciando", { version: getMedusaVersion(), NODE_ENV })

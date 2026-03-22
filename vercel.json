@@ -1,6 +1,17 @@
 {
-  "buildCommand": "npm install",
-  "devCommand": "node server.js",
+  "version": 2,
+  "builds": [
+    {
+      "src": "server.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "server.js"
+    }
+  ],
   "env": {
     "DATABASE_URL": "@database_url",
     "JWT_SECRET": "@jwt_secret",
@@ -11,6 +22,5 @@
     "AUTH_CORS": "@auth_cors",
     "NODE_ENV": "production"
   },
-  "regions": ["sfo1"],
-  "public": false
+  "regions": ["sfo1"]
 }

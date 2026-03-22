@@ -139,6 +139,11 @@
     "*.{md,yaml,yml}": "prettier --write"
   },
   "scripts": {
+    "dev": "node server.js",
+    "start": "node server.js",
+    "setup:env": "node scripts/generate-env.js",
+    "validate:env": "node scripts/validate-env.js",
+    "health:check": "node scripts/health-check.js",
     "build": "turbo run build --concurrency=100% --no-daemon",
     "lint": "eslint --ignore-path .eslintignore --ext .js,.ts,.tsx .",
     "lint:path": "eslint --ignore-path .eslintignore --ext .js,.ts,.tsx",
@@ -163,6 +168,8 @@
   "dependencies": {
     "@changesets/changelog-github": "^0.4.8",
     "@changesets/cli": "^2.26.0",
+    "@medusajs/utils": "workspace:^",
+    "dotenv": "^17.3.1",
     "import-from": "^3.0.0"
   },
   "resolutions": {

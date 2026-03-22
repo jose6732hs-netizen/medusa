@@ -3619,7 +3619,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@medusajs/framework@2.13.4, @medusajs/framework@workspace:*, @medusajs/framework@workspace:packages/core/framework":
+"@medusajs/framework@2.13.4, @medusajs/framework@workspace:*, @medusajs/framework@workspace:^, @medusajs/framework@workspace:packages/core/framework":
   version: 0.0.0-use.local
   resolution: "@medusajs/framework@workspace:packages/core/framework"
   dependencies:
@@ -3790,7 +3790,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@medusajs/medusa@2.13.4, @medusajs/medusa@workspace:*, @medusajs/medusa@workspace:packages/medusa":
+"@medusajs/medusa@2.13.4, @medusajs/medusa@workspace:*, @medusajs/medusa@workspace:^, @medusajs/medusa@workspace:packages/medusa":
   version: 0.0.0-use.local
   resolution: "@medusajs/medusa@workspace:packages/medusa"
   dependencies:
@@ -24865,6 +24865,8 @@ __metadata:
     "@changesets/changelog-github": ^0.4.8
     "@changesets/cli": ^2.26.0
     "@faker-js/faker": ^9.2.0
+    "@medusajs/framework": "workspace:^"
+    "@medusajs/medusa": "workspace:^"
     "@rollup/plugin-node-resolve": ^15.1.0
     "@rollup/plugin-replace": ^5.0.2
     "@storybook/addon-essentials": ^8.3.5

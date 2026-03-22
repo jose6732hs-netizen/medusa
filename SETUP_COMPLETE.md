@@ -61,6 +61,12 @@ pnpm medusa migrations run
 pnpm dev
 ```
 
+O script `start-dev.js` foi criado para facilitar o bootstrap da aplicação com as variáveis de ambiente configuradas. Ele automaticamente:
+- Carrega as variáveis do `.env.local`
+- Inicializa o framework Medusa
+- Inicia o servidor Express
+- Exibe mensagens de sucesso com os URLs de acesso
+
 ---
 
 ## 🎯 Acessar o Medusa

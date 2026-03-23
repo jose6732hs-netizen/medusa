@@ -14684,6 +14684,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"class-variance-authority@npm:^0.7.1":
+  version: 0.7.1
+  resolution: "class-variance-authority@npm:0.7.1"
+  dependencies:
+    clsx: ^2.1.1
+  checksum: 0f438cea22131808b99272de0fa933c2532d5659773bfec0c583de7b3f038378996d3350683426b8e9c74a6286699382106d71fbec52f0dd5fbb191792cccb5b
+  languageName: node
+  linkType: hard
+
 "classnames@npm:^2.3.2":
   version: 2.5.1
   resolution: "classnames@npm:2.5.1"
@@ -25697,6 +25706,7 @@ __metadata:
     axios-mock-adapter: ^1.19.0
     bcryptjs: ^3.0.3
     chromatic: ^6.20.0
+    class-variance-authority: ^0.7.1
     clsx: ^2.1.1
     configstore: ^5.0.1
     cross-env: ^5.2.1

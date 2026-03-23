@@ -1,0 +1,70 @@
+Cria um e-commerce multi-tenant com Medusa SaaS que rode SEM ERROS e apareça em PREVIEW:
+
+REQUISITOS TÉCNICOS:
+===================
+
+1. ESTRUTURA BÁSICA:
+   - Server.js funcionando na porta 3000
+   - npm run dev inicia sem erros
+   - Preview aparece no v0 imediatamente
+   - Nenhum warning ou erro
+
+2. PACKAGE.JSON:
+   - Script "dev": "node server.js"
+   - Script "start": "node server.js"
+   - Script "build": funcional
+   - Todas dependências instaladas
+
+3. BANCO DE DADOS:
+   - PostgreSQL (Neon)
+   - Migrations SQL prontas
+   - Schema multi-tenant
+   - DATABASE_URL configurada
+
+4. VARIÁVEIS DE AMBIENTE (.env):
+   - DATABASE_URL
+   - JWT_SECRET (gerado aleatório)
+   - COOKIE_SECRET (gerado aleatório)
+   - BACKEND_URL, STORE_CORS, ADMIN_CORS
+   - NODE_ENV=development
+   - PORT=3000
+
+5. MEDUSA CONFIG:
+   - medusa-config.js correto
+   - Sem erros de validação
+   - Validações de produção comentadas
+
+6. AUTENTICAÇÃO:
+   - Login de tenant (register + login)
+   - JWT tokens
+   - Isolamento de dados por tenant
+
+7. ADMIN DASHBOARD:
+   - HTML básico em /admin
+   - Gerenciar tenants
+   - Ver dados de cada loja
+
+8. APIs FUNCIONANDO:
+   - GET /api/health (health check)
+   - POST /api/auth/register (novo tenant)
+   - POST /api/auth/login (login)
+   - GET /api/tenant/:id/products (produtos)
+   - POST /api/tenant/:id/products (criar produto)
+
+IMPORTANTE:
+===========
+✓ Não deixar nada incompleto
+✓ Sem módulos faltando
+✓ Sem variáveis de ambiente faltando
+✓ Sem imports que não existem
+✓ Sem portas conflitando
+✓ Tudo pronto para: npm install → npm run dev
+
+RESULTADO:
+==========
+Ao rodar "npm run dev", deve aparecer:
+✓ Server listening on port 3000
+✓ Database connected successfully
+✓ Admin dashboard ready at /admin
+✓ No errors in console
+✓ Preview acessível no navegador

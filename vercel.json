@@ -1,5 +1,5 @@
 {
-  "buildCommand": "npm install && npm run build",
+  "version": 2,
   "env": {
     "DATABASE_URL": "@database_url",
     "JWT_SECRET": "@jwt_secret",
@@ -10,20 +10,5 @@
     "AUTH_CORS": "@auth_cors",
     "NODE_ENV": "production"
   },
-  "functions": {
-    "server.js": {
-      "maxDuration": 30
-    }
-  },
-  "headers": [
-    {
-      "source": "/health",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "no-cache, no-store, must-revalidate"
-        }
-      ]
-    }
-  ]
+  "regions": ["sfo1"]
 }

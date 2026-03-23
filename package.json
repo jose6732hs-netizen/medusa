@@ -166,11 +166,21 @@
     "version": "changeset version && yarn install --no-immutable"
   },
   "dependencies": {
+    "@auth/drizzle-adapter": "^1.11.1",
     "@changesets/changelog-github": "^0.4.8",
     "@changesets/cli": "^2.26.0",
     "@medusajs/utils": "workspace:^",
+    "@neondatabase/serverless": "^1.0.2",
+    "@tailwindcss/forms": "^0.5.11",
+    "bcryptjs": "^3.0.3",
+    "clsx": "^2.1.1",
     "dotenv": "^17.3.1",
-    "import-from": "^3.0.0"
+    "drizzle-kit": "^0.31.10",
+    "drizzle-orm": "^0.45.1",
+    "import-from": "^3.0.0",
+    "jose": "^6.2.2",
+    "next": "^16.2.1",
+    "next-auth": "^4.24.13"
   },
   "resolutions": {
     "@redocly/cli/react": "^17.0.1",

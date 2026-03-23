@@ -1,0 +1,34 @@
+MEDUSA ESTÁ RODANDO AGORA!
+
+═══════════════════════════════════════════════════════════════════════════
+
+CLIQUE AQUI PARA VER:
+
+🏪 LOJA (Storefront)
+   http://localhost:3000
+
+👨‍💼 ADMIN DASHBOARD  
+   http://localhost:3000/admin
+
+💬 CHAT IA
+   POST http://localhost:3000/api/tenant/empresa1/chat
+
+📊 APIs
+   http://localhost:3000/api/produtos
+   http://localhost:3000/api/pedidos
+
+🏥 SAÚDE DO SERVIDOR
+   http://localhost:3000/health
+
+═══════════════════════════════════════════════════════════════════════════
+
+TUDO É MULTI-TENANT - cada cliente separado por tenant_id
+
+Você pode customizar tudo do seu jeito:
+✓ Mudar cores e design
+✓ Adicionar/remover funcionalidades
+✓ Integrar banco de dados real
+✓ Adicionar produtos e categorias
+✓ Customizar lógica de negócio
+
+═══════════════════════════════════════════════════════════════════════════

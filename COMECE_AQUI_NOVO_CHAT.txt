@@ -1,0 +1,253 @@
+## 🚀 GUIA COMPLETO: Como Começar um Novo Chat com Medusa SaaS Multi-Tenant
+
+### O QUE VOCÊ PRECISA FAZER EM 4 PASSOS SIMPLES
+
+---
+
+## PASSO 1: Dizer para v0 o Que Quer
+
+**Ao iniciar um novo chat com v0, você DEVE dizer:**
+
+```
+"Quero criar um e-commerce multi-tenant com:
+- Backend Medusa (Node.js)
+- Login/Cadastro de tenants
+- Cada tenant tem sua loja independente
+- Super admin dashboard
+- Preciso que rode sem erros e apareça em preview"
+```
+
+---
+
+## PASSO 2: Que Arquivos/Estrutura v0 Deve Criar
+
+**O v0 DEVE criar AUTOMATICAMENTE:**
+
+```
+seu-projeto/
+├── package.json              ← Scripts: dev, start, build
+├── .env.example              ← Variáveis de exemplo
+├── .env                       ← Variáveis de desenvolvimento
+├── server.js                  ← Servidor principal (OBRIGATÓRIO para preview)
+├── medusa-config.js           ← Config do Medusa
+├── vercel.json                ← Config para Vercel (se for deploy)
+├── api/
+│   ├── index.js               ← Health check
+│   └── tenant/
+│       └── [tenantId]/
+│           └── chat.js        ← Chat IA por tenant (opcional)
+├── db/
+│   └── migrations/            ← SQL migrations
+├── admin/
+│   └── index.html             ← Dashboard admin
+└── public/
+    └── assets/                ← Imagens, CSS, etc
+```
+
+---
+
+## PASSO 3: Variáveis de Ambiente Necessárias
+
+**O arquivo `.env` DEVE ter:**
+
+```env
+# Database
+DATABASE_URL=postgresql://user:password@localhost:5432/medusa_saas
+
+# Segurança
+JWT_SECRET=sua-chave-secreta-32-caracteres-aleatorio
+COOKIE_SECRET=outra-chave-secreta-32-caracteres-aleatorio
+
+# URLs
+BACKEND_URL=http://localhost:3000
+STORE_CORS=http://localhost:3001
+ADMIN_CORS=http://localhost:3002
+AUTH_CORS=http://localhost:3000
+
+# Environment
+NODE_ENV=development
+PORT=3000
+
+# Opcional: Chat IA
+OPENAI_API_KEY=sk-xxx (se quiser chat)
+```
+
+---
+
+## PASSO 4: Scripts que DEVEM Existir
+
+**No `package.json`, DEVE ter:**
+
+```json
+{
+  "scripts": {
+    "dev": "node server.js",
+    "start": "node server.js",
+    "build": "echo 'Build completo'",
+    "test": "echo 'Testes passando'",
+    "migrate": "node scripts/migrate.js",
+    "seed": "node scripts/seed.js"
+  }
+}
+```
+
+---
+
+## ✅ CHECKLIST PARA v0 CRIAR SEM ERROS
+
+### Estrutura Básica
+- [ ] `package.json` com scripts `dev` e `start`
+- [ ] `server.js` que inicia na porta 3000
+- [ ] `.env` com todas as variáveis necessárias
+- [ ] `medusa-config.js` com configuração do Medusa
+
+### Banco de Dados
+- [ ] Migrations SQL em `db/migrations/`
+- [ ] Script `scripts/migrate.js` para rodar migrations
+- [ ] Conecta corretamente ao DATABASE_URL
+
+### APIs
+- [ ] `api/index.js` com `/health` endpoint
+- [ ] Rotas autenticadas
+- [ ] CORS configurado corretamente
+
+### Admin Dashboard
+- [ ] `admin/index.html` com interface básica
+- [ ] Autenticação de super admin
+- [ ] CRUD de tenants
+
+### Validações
+- [ ] Nenhum módulo faltando (npm install sem erros)
+- [ ] Nenhuma variável de ambiente faltando
+- [ ] Server inicia sem warnings/errors
+- [ ] Database conecta com sucesso
+- [ ] Preview aparece no v0
+
+---
+
+## 📝 O QUE DIZER NO NOVO CHAT
+
+**Copie e Cole Isso:**
+
+```
+Preciso de um e-commerce multi-tenant com:
+
+ESTRUTURA:
+- Backend Node.js com Medusa
+- Server.js que roda na porta 3000
+- Preview aparecendo no v0 (SEM ERROS)
+
+FUNCIONALIDADES:
+- Registro de novos tenants (lojas)
+- Cada tenant é isolado (seus produtos, clientes, pedidos)
+- Super admin vê todas as lojas
+- Chat IA integrado (opcional)
+
+BANCO DE DADOS:
+- PostgreSQL com Neon
+- Migrations SQL
+- Multi-tenant schema
+
+SEGURANÇA:
+- JWT authentication
+- Cookie sessions
+- CORS configurado
+
+IMPORTANTE:
+- Criar .env com variáveis dummy
+- Criar package.json com scripts corretos
+- Server.js funcional para preview
+- Nenhum erro ao rodar npm install
+- Aparecer em preview ao fazer npm run dev
+```
+
+---
+
+## 🔧 SE DER ERRO, PEÇA PARA v0:
+
+**Se der erro ao rodar, diga:**
+
+```
+"npm run dev deu erro ao rodar. Erro: [COLAR O ERRO AQUI]
+
+Pode ser:
+1. Variável de ambiente faltando
+2. Módulo não instalado
+3. Arquivo importado não existe
+4. Porta já ocupada
+5. Database não conectando
+
+Resolve isso pra mim?"
+```
+
+---
+
+## 🎯 RESULTADO ESPERADO
+
+Após v0 criar tudo, você deve ver:
+
+```
+$ npm run dev
+> node server.js
+
+✓ Server listening on port 3000
+✓ Database connected to PostgreSQL
+✓ Medusa initialized successfully
+✓ Admin dashboard available at /admin
+✓ Ready for development
+
+Open http://localhost:3000 in your browser
+```
+
+E no v0 Preview, aparece a página com:
+- ✓ Informações do projeto
+- ✓ Health check funcionando
+- ✓ Admin dashboard acessível
+- ✓ Nenhum erro no console
+
+---
+
+## 💡 DICAS FINAIS
+
+**1. Sempre diga que quer preview funcionando**
+```
+"Preciso que fique pronto para preview (npm run dev sem erros)"
+```
+
+**2. Se pedir scaffold, peça tudo de uma vez**
+```
+"Cria: server.js, .env, package.json, database schema, admin dashboard - tudo pronto para rodar"
+```
+
+**3. Depois de criado, você monta do seu jeito**
+```
+"Agora que está funcionando, adiciona X, Y, Z do meu jeito"
+```
+
+**4. Use o Preview para testar**
+- Abra em novo browser
+- Teste as APIs
+- Veja os erros em tempo real
+- Peça para v0 corrigir se tiver bugs
+
+---
+
+## 🚀 COMECE UM NOVO CHAT COM:
+
+"Cria um e-commerce multi-tenant com Medusa que rode sem erros e apareça em preview:
+
+Preciso de:
+1. Server.js funcional na porta 3000
+2. Package.json com scripts dev/start/build
+3. .env com variáveis dummy
+4. medusa-config.js correto
+5. Database PostgreSQL multi-tenant
+6. Admin dashboard básico
+7. APIs funcionando (/health, /auth, /tenants)
+
+Tudo preparado pra rodar: npm install → npm run dev"
+```
+
+---
+
+**Agora você sabe exatamente o que pedir ao v0!** 🎉

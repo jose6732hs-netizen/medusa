@@ -1,0 +1,126 @@
+═══════════════════════════════════════════════════════════════════════════
+                    CHECKLIST MEDUSA SAAS MULTI-TENANT
+                      Para Novo Chat com v0
+═══════════════════════════════════════════════════════════════════════════
+
+ANTES DE INICIAR O CHAT:
+========================
+[ ] Abra um NOVO chat com v0 (não continue neste)
+[ ] Copie o arquivo TEMPLATE_NOVO_CHAT.txt
+[ ] Cole o conteúdo na primeira mensagem do novo chat
+[ ] Clique em "Enter" e aguarde v0 responder
+
+APÓS v0 CRIAR O PROJETO:
+========================
+
+PASSO 1: Verificar Arquivos
+[ ] package.json existe e tem scripts dev/start/build
+[ ] .env existe com variáveis configuradas
+[ ] server.js existe e é executável
+[ ] medusa-config.js existe
+[ ] Pasta /api existe com index.js
+[ ] Pasta /admin existe com dashboard
+
+PASSO 2: Rodar Localmente
+[ ] npm install (sem erros)
+[ ] npm run dev (inicia servidor)
+[ ] Aguarda "Server listening on port 3000"
+[ ] Nenhum erro no console
+
+PASSO 3: Testar Preview
+[ ] Clique em "Preview" no v0
+[ ] Página carrega sem erro 404
+[ ] Consegue ver o dashboard
+[ ] Health check funciona (/health)
+
+PASSO 4: Validar Funcionalidades
+[ ] Login de tenant funciona
+[ ] Criar novo tenant funciona
+[ ] Produtos aparecem
+[ ] Admin vê todos os tenants
+[ ] Sem erros de CORS
+
+PASSO 5: Personalize do Seu Jeito
+[ ] Agora você pode pedir mudanças
+[ ] "Adiciona X funcionalidade"
+[ ] "Muda o design para Y"
+[ ] "Integra com Z serviço"
+
+═══════════════════════════════════════════════════════════════════════════
+
+O QUE PEDIR SE DER ERRO:
+=========================
+
+Se der erro ao rodar npm install:
+  "npm install deu erro: [ERRO AQUI]
+   Resolve pra mim"
+
+Se server não inicia:
+  "npm run dev não inicia. Erro: [ERRO AQUI]
+   Checa o server.js e variáveis de ambiente"
+
+Se falta variável de ambiente:
+  "Falta DATABASE_URL ou outra variável.
+   Cria um .env completo com tudo"
+
+Se database não conecta:
+  "Database_URL está errado ou database está down.
+   Configura corretamente"
+
+Se preview mostra erro 404:
+  "Preview acessível mas mostra 404.
+   Checa se server.js está correto"
+
+═══════════════════════════════════════════════════════════════════════════
+
+ESTRUTURA FINAL ESPERADA:
+==========================
+
+seu-projeto/
+├── package.json ...................... ✓ Scripts ok
+├── .env .............................. ✓ Variáveis configuradas
+├── .env.example ...................... ✓ Template
+├── server.js ......................... ✓ Servidor rodando
+├── medusa-config.js .................. ✓ Config Medusa
+├── vercel.json ....................... ✓ Para Vercel (opcional)
+├── api/
+│   ├── index.js ...................... ✓ Health check
+│   └── tenant/[tenantId]/chat.js ..... ✓ Chat IA
+├── db/
+│   ├── migrations/001_*.sql .......... ✓ Schema
+│   └── seed.sql ...................... ✓ Dados iniciais
+├── admin/
+│   └── index.html .................... ✓ Dashboard
+├── public/
+│   └── assets/ ....................... ✓ Imagens/CSS
+└── README.md ......................... ✓ Documentação
+
+═══════════════════════════════════════════════════════════════════════════
+
+DEPOIS DE TUDO FUNCIONANDO:
+============================
+
+Você pode pedir para v0:
+  ✓ "Adiciona login social (Google, GitHub)"
+  ✓ "Cria seção de pagamentos (Stripe)"
+  ✓ "Adiciona notificações por email"
+  ✓ "Cria relatórios de vendas"
+  ✓ "Integra com WhatsApp API"
+  ✓ "Adiciona analytics"
+  ✓ "Cria sistema de cupons"
+  ✓ "Monta app mobile (React Native)"
+
+═══════════════════════════════════════════════════════════════════════════
+
+DICAS IMPORTANTES:
+===================
+
+1. SEMPRE diga que quer Preview funcionando
+2. SEMPRE copie/cole o TEMPLATE_NOVO_CHAT.txt no novo chat
+3. SEMPRE aguarde v0 criar TUDO antes de testar
+4. SEMPRE rode "npm install" antes de "npm run dev"
+5. SEMPRE verifique se .env está correto
+
+═══════════════════════════════════════════════════════════════════════════
+
+SUCESSO! 🎉 Seu e-commerce multi-tenant está pronto!

@@ -1,0 +1,213 @@
+🚀 COMO VER O PROJETO EM PREVIEW E RODÁ-LO
+
+═══════════════════════════════════════════════════════════════════
+
+OPÇÃO 1: PREVIEW NO V0 (MAIS RÁPIDO)
+───────────────────────────────────────
+
+1. Clique no "Version Box" (caixa de versão) no topo do v0
+   - Você verá um botão com o número da versão
+   - Isso abrirá o PREVIEW AUTOMÁTICO
+
+2. O v0 detectará a porta do Next.js automaticamente
+   - Você poderá ver o projeto rodando em tempo real
+   - Hot Module Replacement (HMR) ativado = mudanças aparecem ao vivo
+
+
+═══════════════════════════════════════════════════════════════════
+
+OPÇÃO 2: RODAR LOCALMENTE (SEU COMPUTADOR)
+─────────────────────────────────────────────
+
+PASSO 1: DOWNLOAD DO PROJETO
+────────────────────────────
+1. Clique nos 3 PONTOS (⋮) no topo direito do v0
+2. Selecione "Download ZIP" ou "Clone/Git"
+3. Extraia o arquivo em um local da sua máquina
+
+
+PASSO 2: INSTALAR DEPENDÊNCIAS
+───────────────────────────────
+# Abra o terminal na pasta medusa-ecommerce
+cd medusa-ecommerce
+npm install
+
+# Ou se preferir:
+yarn install
+# ou
+pnpm install
+
+
+PASSO 3: CONFIGURAR VARIÁVEIS DE AMBIENTE
+──────────────────────────────────────────
+1. Crie um arquivo `.env.local` (cópia do `.env.example`)
+   cp .env.example .env.local
+
+2. Abra `.env.local` e preenc a com:
+   - DATABASE_URL: Cole sua conexão Neon PostgreSQL
+   - NEXTAUTH_SECRET: gere com `openssl rand -base64 32`
+   - STRIPE keys: (opcional por enquanto)
+
+   Exemplo:
+   ┌──────────────────────────────────────────┐
+   │ DATABASE_URL=postgresql://user:pass@...  │
+   │ NEXTAUTH_SECRET=abcd1234...             │
+   │ NEXTAUTH_URL=http://localhost:3000       │
+   │ NODE_ENV=development                    │
+   └──────────────────────────────────────────┘
+
+
+PASSO 4: SETUP DO BANCO DE DADOS
+─────────────────────────────────
+# Cria as tabelas no Neon
+npm run db:push
+
+# Ou manualmente:
+npx drizzle-kit push:pg
+
+
+PASSO 5: RODAR O SERVIDOR
+─────────────────────────
+npm run dev
+
+# O servidor rodará em: http://localhost:3000
+
+
+PASSO 6: ABRIR NO NAVEGADOR
+───────────────────────────
+Abra o navegador e vá para:
+👉 http://localhost:3000
+
+
+═══════════════════════════════════════════════════════════════════
+
+TESTANDO O PROJETO
+──────────────────
+
+✅ Página inicial: http://localhost:3000
+✅ Registrar: http://localhost:3000/register
+✅ Login: http://localhost:3000/login
+✅ Dashboard: http://localhost:3000/dashboard (após login)
+
+Teste:
+1. Crie uma conta (ex: vendor@example.com)
+2. Faça login
+3. Vá para Dashboard
+4. Crie uma loja
+5. Adicione produtos
+6. Vá para storefront e veja os produtos
+
+
+═══════════════════════════════════════════════════════════════════
+
+ESTRUTURA IMPORTANTE
+───────────────────
+
+app/
+  ├── page.tsx             ← Homepage inicial
+  ├── login/page.tsx       ← Página de login
+  ├── register/page.tsx    ← Página de registro
+  ├── dashboard/           ← Dashboard do vendor
+  │   ├── page.tsx         ← Dashboard inicial
+  │   ├── stores/          ← Gestão de lojas
+  │   │   ├── page.tsx
+  │   │   ├── new/page.tsx
+  │   │   ├── [id]/page.tsx
+  │   │   ├── [id]/products/
+  │   │   ├── [id]/orders/
+  │   │   └── [id]/analytics/
+  │   └── ...
+  ├── storefront/          ← Vitrine pública
+  │   └── [store]/         ← Loja pública
+  │       ├── page.tsx
+  │       ├── products/
+  │       ├── cart/
+  │       └── checkout/
+  └── api/
+      ├── auth/            ← Endpoints de autenticação
+      ├── stores/          ← API de lojas
+      ├── products/        ← API de produtos
+      ├── cart/            ← API de carrinho
+      ├── checkout/        ← API de checkout
+      ├── orders/          ← API de pedidos
+      └── analytics/       ← API de analytics
+
+
+═══════════════════════════════════════════════════════════════════
+
+TROUBLESHOOTING
+───────────────
+
+❌ Erro "DATABASE_URL não configurado"
+   → Verifique se .env.local existe e tem DATABASE_URL correto
+
+❌ Erro de conexão ao Neon
+   → Verifique se a conexão string está correta
+   → Teste a conexão no Neon Console
+
+❌ Portas já em uso
+   → npm run dev -- -p 3001  (usar outra porta)
+
+❌ Erro de migração do banco
+   → npm run db:push novamente
+   → Ou: npx drizzle-kit generate:pg
+
+❌ Módulos não encontrados
+   → Rode: npm install novamente
+   → Delete node_modules e reinstale: rm -rf node_modules && npm install
+
+
+═══════════════════════════════════════════════════════════════════
+
+DICAS ÚTEIS
+──────────
+
+💡 Development mode com reload:
+   npm run dev
+
+💡 Build para produção:
+   npm run build
+
+💡 Preview da build:
+   npm run build && npm start
+
+💡 Rodar linter:
+   npm run lint
+
+💡 Ver variáveis de environment:
+   Abra o arquivo lib/constants.ts
+
+
+═══════════════════════════════════════════════════════════════════
+
+DOCUMENTAÇÃO RÁPIDA
+───────────────────
+
+Leia nesta ordem:
+1. START_HERE.txt          ← Visão geral em ASCII
+2. LEIA_ME.md              ← Português completo
+3. README.md               ← Quick start
+4. ARCHITECTURE.md         ← Como funciona
+5. DEVELOPER_GUIDE.md      ← Como adicionar features
+
+
+═══════════════════════════════════════════════════════════════════
+
+PRÓXIMAS AÇÕES
+──────────────
+
+Agora que o projeto está criado, você pode:
+
+✅ Clicar no "Version Box" para ver o preview automático
+✅ Fazer download do projeto para rodar localmente
+✅ Ler a documentação em LEIA_ME.md
+✅ Customizar cores em app/globals.css
+✅ Adicionar Stripe para pagamentos
+✅ Adicionar email com nodemailer/resend
+✅ Fazer deploy em Vercel
+✅ Adicionar features novas
+
+
+═══════════════════════════════════════════════════════════════════
+
+Sucesso! O projeto está 100% pronto! 🚀

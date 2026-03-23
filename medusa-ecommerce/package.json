@@ -1,0 +1,44 @@
+{
+  "name": "medusa-ecommerce",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "db:push": "drizzle-kit push:pg",
+    "db:migrate": "drizzle-kit migrate:pg",
+    "db:generate": "drizzle-kit generate:pg",
+    "db:studio": "drizzle-kit studio"
+  },
+  "dependencies": {
+    "next": "^16.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "typescript": "^5.6.2",
+    "@neondatabase/serverless": "^0.9.4",
+    "drizzle-orm": "^0.38.3",
+    "next-auth": "^5.0.0-beta.20",
+    "@auth/core": "^0.43.0",
+    "@auth/drizzle-adapter": "^1.6.0",
+    "bcryptjs": "^2.4.3",
+    "zod": "^3.25.8",
+    "stripe": "^18.0.0",
+    "@stripe/react-stripe-js": "^3.0.0",
+    "clsx": "^2.1.1",
+    "tailwindcss": "^3.4.3",
+    "postcss": "^8.4.38",
+    "autoprefixer": "^10.4.19"
+  },
+  "devDependencies": {
+    "@types/node": "^20.12.11",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@types/bcryptjs": "^2.4.2",
+    "drizzle-kit": "^0.24.2",
+    "eslint": "^8.40.0",
+    "eslint-config-next": "^16.0.0",
+    "@tailwindcss/forms": "^0.5.9"
+  }
+}

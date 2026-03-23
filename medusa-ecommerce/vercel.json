@@ -1,0 +1,36 @@
+{
+  "buildCommand": "npm run build",
+  "devCommand": "npm run dev",
+  "installCommand": "npm install",
+  "framework": "nextjs",
+  "outputDirectory": ".next",
+  "env": {
+    "NODE_ENV": "production",
+    "NEXTAUTH_URL": {
+      "description": "URL da sua aplicação",
+      "required": true
+    },
+    "NEXTAUTH_SECRET": {
+      "description": "Secret para NextAuth (gere com: openssl rand -base64 32)",
+      "required": true
+    },
+    "DATABASE_URL": {
+      "description": "URL de conexão do Neon PostgreSQL",
+      "required": true
+    },
+    "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY": {
+      "description": "Chave pública Stripe (opcional para fase inicial)",
+      "required": false
+    },
+    "STRIPE_SECRET_KEY": {
+      "description": "Chave secreta Stripe (opcional para fase inicial)",
+      "required": false
+    }
+  },
+  "crons": [
+    {
+      "path": "/api/cron/cleanup",
+      "schedule": "0 0 * * *"
+    }
+  ]
+}

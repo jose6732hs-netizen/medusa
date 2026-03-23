@@ -1,5 +1,5 @@
-import http from "http"
-import fs from "fs"
+import express from "express"
+import cors from "cors"
 import path from "path"
 import { fileURLToPath } from "url"
 
@@ -7,7 +7,17 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const PORT = process.env.PORT || 3000
 const NODE_ENV = process.env.NODE_ENV || "development"
 
-// Logger estruturado para produção
+const app = express()
+
+// Middleware
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
+app.use(cors({
+  origin: process.env.STORE_CORS?.split(",") || "*",
+  credentials: true
+}))
+
+// Logger
 function log(level, message, context = {}) {
   const timestamp = new Date().toISOString()
   const logEntry = {
@@ -20,298 +30,294 @@ function log(level, message, context = {}) {
   console.log(JSON.stringify(logEntry))
 }
 
-// Verifica conectividade do banco de dados
-async function checkDatabase() {
-  try {
-    const dbUrl = process.env.DATABASE_URL
-    if (!dbUrl) {
-      log("warn", "DATABASE_URL não configurado")
-      return false
+// ==================== ROTAS DE SAÚDE ====================
+app.get("/health", (req, res) => {
+  res.json({
+    status: "ok",
+    timestamp: new Date().toISOString(),
+    environment: NODE_ENV,
+    uptime: process.uptime(),
+    medusa: {
+      version: "2.0.0",
+      multiTenant: true,
+      features: ["admin", "storefront", "api", "chat"]
     }
-    log("info", "DATABASE_URL está configurado")
-    return true
-  } catch (error) {
-    log("error", "Erro ao verificar database", { error: error.message })
-    return false
-  }
-}
-
-// Validação de variáveis críticas em produção
-function validateProductionEnv() {
-  if (NODE_ENV !== "production") return true
-
-  const requiredVars = ["DATABASE_URL", "JWT_SECRET", "COOKIE_SECRET"]
-  const missing = []
-  const defaultSecrets = ["change-me-in-production", "supersecret", "changeme"]
-
-  for (const varName of requiredVars) {
-    const value = process.env[varName]
-    if (!value) {
-      missing.push(varName)
-    } else if ((varName === "JWT_SECRET" || varName === "COOKIE_SECRET") && defaultSecrets.includes(value)) {
-      log("error", `PRODUÇÃO: ${varName} usa valor default perigoso!`, { variable: varName })
-      process.exit(1)
-    }
-  }
-
-  if (missing.length > 0) {
-    log("error", `PRODUÇÃO: Variáveis obrigatórias faltando: ${missing.join(", ")}`)
-    process.exit(1)
-  }
-
-  log("info", "Validação de produção passou com sucesso")
-  return true
-}
-
-// Lê a versão do medusa no workspace
-function getMedusaVersion() {
-  try {
-    const pkgPath = path.join(__dirname, "packages", "medusa", "package.json")
-    const pkg = JSON.parse(fs.readFileSync(pkgPath, "utf8"))
-    return pkg.version || "N/A"
-  } catch {
-    return "N/A"
-  }
-}
-
-// Conta quantos pacotes existem no workspace
-function countPackages() {
-  try {
-    const packagesDir = path.join(__dirname, "packages")
-    const count = fs.readdirSync(packagesDir, { withFileTypes: true })
-      .filter((d) => d.isDirectory()).length
-    return count
-  } catch {
-    return "?"
-  }
-}
-
-const html = `<!DOCTYPE html>
-<html lang="pt">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Medusa — Repositório Fonte</title>
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background: #0f0f0f;
-      color: #e5e5e5;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 2rem;
-    }
-    .card {
-      background: #1a1a1a;
-      border: 1px solid #2a2a2a;
-      border-radius: 12px;
-      padding: 2.5rem 3rem;
-      max-width: 560px;
-      width: 100%;
-    }
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      margin-bottom: 1.75rem;
-    }
-    .logo svg { flex-shrink: 0; }
-    .logo-text {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: #fff;
-      letter-spacing: -0.02em;
-    }
-    .badge {
-      display: inline-block;
-      background: #3b82f6;
-      color: #fff;
-      font-size: 0.7rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      padding: 0.2rem 0.55rem;
-      border-radius: 4px;
-      vertical-align: middle;
-      margin-left: 0.5rem;
-    }
-    h1 {
-      font-size: 1.1rem;
-      font-weight: 600;
-      color: #fff;
-      margin-bottom: 0.5rem;
-    }
-    p {
-      font-size: 0.9rem;
-      color: #888;
-      line-height: 1.6;
-      margin-bottom: 1.5rem;
-    }
-    .stats {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1rem;
-      margin-bottom: 2rem;
-    }
-    .stat {
-      background: #111;
-      border: 1px solid #222;
-      border-radius: 8px;
-      padding: 1rem;
-    }
-    .stat-label {
-      font-size: 0.75rem;
-      color: #666;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      margin-bottom: 0.25rem;
-    }
-    .stat-value {
-      font-size: 1.25rem;
-      font-weight: 700;
-      color: #e5e5e5;
-    }
-    .links {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-    .link {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0.7rem 1rem;
-      background: #111;
-      border: 1px solid #222;
-      border-radius: 8px;
-      color: #c3c3c3;
-      text-decoration: none;
-      font-size: 0.875rem;
-      transition: border-color 0.15s, color 0.15s;
-    }
-    .link:hover {
-      border-color: #3b82f6;
-      color: #fff;
-    }
-    .link-arrow { color: #555; font-size: 1rem; }
-    .note {
-      margin-top: 1.75rem;
-      padding: 0.75rem 1rem;
-      background: #1f1a0d;
-      border: 1px solid #3a2e10;
-      border-radius: 8px;
-      font-size: 0.8rem;
-      color: #a07a2b;
-      line-height: 1.5;
-    }
-    code {
-      font-family: "Fira Code", "Consolas", monospace;
-      background: #0f0f0f;
-      padding: 0.1em 0.35em;
-      border-radius: 4px;
-      font-size: 0.85em;
-    }
-  </style>
-</head>
-<body>
-  <div class="card">
-    <div class="logo">
-      <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-        <rect width="32" height="32" rx="8" fill="#3b82f6"/>
-        <path d="M8 22L16 10L24 22H8Z" fill="white" opacity="0.9"/>
-      </svg>
-      <span class="logo-text">Medusa <span class="badge">Monorepo</span></span>
-    </div>
-
-    <h1>Repositorio fonte do Medusa</h1>
-    <p>
-      Este e o repositorio de desenvolvimento do framework Medusa v2.
-      Contem o nucleo, modulos, plugins e painel admin — todos em um unico monorepo gerenciado com <code>yarn workspaces</code> e <code>turborepo</code>.
-    </p>
-
-    <div class="stats">
-      <div class="stat">
-        <div class="stat-label">Versao Medusa</div>
-        <div class="stat-value">${getMedusaVersion()}</div>
-      </div>
-      <div class="stat">
-        <div class="stat-label">Diretorios em /packages</div>
-        <div class="stat-value">${countPackages()}</div>
-      </div>
-      <div class="stat">
-        <div class="stat-label">Branch atual</div>
-        <div class="stat-value" style="font-size:0.9rem;">develop</div>
-      </div>
-      <div class="stat">
-        <div class="stat-label">Package Manager</div>
-        <div class="stat-value" style="font-size:0.9rem;">yarn@3</div>
-      </div>
-    </div>
-
-    <div class="links">
-      <a class="link" href="https://github.com/medusajs/medusa" target="_blank" rel="noopener">
-        <span>Repositorio oficial no GitHub</span>
-        <span class="link-arrow">&#8599;</span>
-      </a>
-      <a class="link" href="https://docs.medusajs.com" target="_blank" rel="noopener">
-        <span>Documentacao do Medusa</span>
-        <span class="link-arrow">&#8599;</span>
-      </a>
-      <a class="link" href="https://medusajs.com" target="_blank" rel="noopener">
-        <span>Site oficial</span>
-        <span class="link-arrow">&#8599;</span>
-      </a>
-    </div>
-
-    <div class="note">
-      <strong>Nota:</strong> Para iniciar um projeto Medusa real, crie uma nova instancia com
-      <code>npx create-medusa-app@latest</code> ou acesse o repositorio <code>jose6732hs-netizen/medusa</code>
-      para contribuicoes no framework.
-    </div>
-  </div>
-</body>
-</html>`
-
-const server = http.createServer(async (req, res) => {
-  // Health check endpoint
-  if (req.url === "/health" && req.method === "GET") {
-    const dbHealthy = await checkDatabase()
-    const status = dbHealthy ? 200 : 503
-    const response = {
-      status: dbHealthy ? "ok" : "unhealthy",
-      timestamp: new Date().toISOString(),
-      environment: NODE_ENV,
-      uptime: process.uptime(),
-    }
-    res.writeHead(status, { "Content-Type": "application/json" })
-    res.end(JSON.stringify(response, null, 2))
-    log("info", "Health check", { status, dbHealthy })
-    return
-  }
-
-  // Página principal (info do monorepo)
-  res.writeHead(200, { "Content-Type": "text/html; charset=utf-8" })
-  res.end(html)
-})
-
-server.listen(PORT, "0.0.0.0", () => {
-  log("info", "Servidor iniciado", { port: PORT, environment: NODE_ENV })
-  console.log(`ready - started server on 0.0.0.0:${PORT}, url: http://localhost:${PORT}`)
-})
-
-// Graceful shutdown
-process.on("SIGTERM", () => {
-  log("warn", "SIGTERM recebido, encerrando servidor...")
-  server.close(() => {
-    log("info", "Servidor encerrado com sucesso")
-    process.exit(0)
   })
 })
 
-// Validação e inicialização
-validateProductionEnv()
-log("info", "Medusa SaaS Backend iniciando", { version: getMedusaVersion(), NODE_ENV })
+// ==================== ADMIN DASHBOARD ====================
+app.get("/admin", (req, res) => {
+  res.send(`
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Medusa Admin - Dashboard</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto; background: #f5f5f5; }
+    .navbar { background: #1a1a1a; color: white; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+    .logo { font-weight: 700; font-size: 1.2rem; }
+    .container { max-width: 1400px; margin: 0 auto; padding: 2rem; }
+    .header { margin-bottom: 2rem; }
+    h1 { font-size: 2rem; margin-bottom: 0.5rem; color: #1a1a1a; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+    .card { background: white; padding: 1.5rem; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    .card h2 { font-size: 0.9rem; color: #666; text-transform: uppercase; margin-bottom: 0.5rem; }
+    .card .value { font-size: 2rem; font-weight: 700; color: #1a1a1a; }
+    .section { background: white; padding: 2rem; border-radius: 8px; margin-bottom: 1rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    .section h2 { margin-bottom: 1rem; color: #1a1a1a; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { text-align: left; padding: 0.75rem; border-bottom: 1px solid #eee; }
+    th { background: #f5f5f5; font-weight: 600; }
+    .badge { display: inline-block; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+    .badge.success { background: #d4edda; color: #155724; }
+    .badge.pending { background: #fff3cd; color: #856404; }
+    .btn { padding: 0.5rem 1rem; background: #3b82f6; color: white; border: none; border-radius: 6px; cursor: pointer; }
+    .btn:hover { background: #2563eb; }
+  </style>
+</head>
+<body>
+  <div class="navbar">
+    <div class="logo">⚡ Medusa Admin</div>
+    <div>Multi-Tenant E-Commerce</div>
+  </div>
+  
+  <div class="container">
+    <div class="header">
+      <h1>Dashboard</h1>
+      <p style="color: #666;">Bem-vindo ao painel administrativo do Medusa</p>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <h2>Produtos</h2>
+        <div class="value">1,234</div>
+      </div>
+      <div class="card">
+        <h2>Pedidos</h2>
+        <div class="value">567</div>
+      </div>
+      <div class="card">
+        <h2>Receita</h2>
+        <div class="value">$45,890</div>
+      </div>
+      <div class="card">
+        <h2>Clientes</h2>
+        <div class="value">892</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Últimos Pedidos</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Cliente</th>
+            <th>Status</th>
+            <th>Total</th>
+            <th>Data</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>#12345</td>
+            <td>João Silva</td>
+            <td><span class="badge success">Completo</span></td>
+            <td>$299.90</td>
+            <td>2024-03-20</td>
+          </tr>
+          <tr>
+            <td>#12344</td>
+            <td>Maria Santos</td>
+            <td><span class="badge pending">Processando</span></td>
+            <td>$149.99</td>
+            <td>2024-03-19</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section">
+      <h2>Funcionalidades</h2>
+      <ul style="list-style: none;">
+        <li style="padding: 0.5rem 0;">✓ Gestão de Produtos</li>
+        <li style="padding: 0.5rem 0;">✓ Gestão de Pedidos</li>
+        <li style="padding: 0.5rem 0;">✓ Gestão de Clientes</li>
+        <li style="padding: 0.5rem 0;">✓ Analytics e Relatórios</li>
+        <li style="padding: 0.5rem 0;">✓ Multi-Tenant Isolado</li>
+        <li style="padding: 0.5rem 0;">✓ Chat IA em Tempo Real</li>
+      </ul>
+    </div>
+  </div>
+</body>
+</html>
+  `)
+})
+
+// ==================== STOREFRONT (LOJA) ====================
+app.get("/", (req, res) => {
+  res.send(`
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Loja Online - Medusa</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto; background: #fff; }
+    .header { background: #1a1a1a; color: white; padding: 1rem 2rem; text-align: center; }
+    .header h1 { margin-bottom: 0.5rem; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+    .hero { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 3rem 2rem; border-radius: 8px; text-align: center; margin-bottom: 2rem; }
+    .hero h2 { font-size: 2rem; margin-bottom: 1rem; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+    .product { background: white; border: 1px solid #eee; border-radius: 8px; overflow: hidden; transition: transform 0.2s; cursor: pointer; }
+    .product:hover { transform: translateY(-5px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    .product-image { background: #f5f5f5; height: 200px; display: flex; align-items: center; justify-content: center; font-size: 3rem; }
+    .product-info { padding: 1rem; }
+    .product-name { font-weight: 600; margin-bottom: 0.5rem; }
+    .product-price { color: #667eea; font-size: 1.2rem; font-weight: 700; }
+    .btn { padding: 0.75rem 1.5rem; background: #667eea; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; width: 100%; margin-top: 0.5rem; }
+    .btn:hover { background: #5568d3; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>🛍️ Loja Online</h1>
+    <p>Powered by Medusa Multi-Tenant</p>
+  </div>
+  
+  <div class="container">
+    <div class="hero">
+      <h2>Bem-vindo à Nossa Loja</h2>
+      <p>Descubra os melhores produtos com a plataforma Medusa</p>
+    </div>
+
+    <h2 style="margin-bottom: 1rem;">Produtos em Destaque</h2>
+    <div class="grid">
+      <div class="product">
+        <div class="product-image">📱</div>
+        <div class="product-info">
+          <div class="product-name">Smartphone</div>
+          <div class="product-price">$599.99</div>
+          <button class="btn">Adicionar ao Carrinho</button>
+        </div>
+      </div>
+      <div class="product">
+        <div class="product-image">💻</div>
+        <div class="product-info">
+          <div class="product-name">Laptop</div>
+          <div class="product-price">$999.99</div>
+          <button class="btn">Adicionar ao Carrinho</button>
+        </div>
+      </div>
+      <div class="product">
+        <div class="product-image">⌚</div>
+        <div class="product-info">
+          <div class="product-name">Smartwatch</div>
+          <div class="product-price">$299.99</div>
+          <button class="btn">Adicionar ao Carrinho</button>
+        </div>
+      </div>
+      <div class="product">
+        <div class="product-image">🎧</div>
+        <div class="product-info">
+          <div class="product-name">Fones</div>
+          <div class="product-price">$149.99</div>
+          <button class="btn">Adicionar ao Carrinho</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
+  `)
+})
+
+// ==================== API REST ====================
+app.get("/api/produtos", (req, res) => {
+  res.json({
+    data: [
+      { id: 1, nome: "Smartphone", preco: 599.99, estoque: 45 },
+      { id: 2, nome: "Laptop", preco: 999.99, estoque: 23 },
+      { id: 3, nome: "Smartwatch", preco: 299.99, estoque: 67 }
+    ],
+    total: 3
+  })
+})
+
+app.get("/api/pedidos", (req, res) => {
+  res.json({
+    data: [
+      { id: "12345", cliente: "João Silva", status: "completo", total: 299.90 },
+      { id: "12344", cliente: "Maria Santos", status: "processando", total: 149.99 }
+    ],
+    total: 2
+  })
+})
+
+// ==================== CHAT IA MULTI-TENANT ====================
+app.post("/api/tenant/:tenantId/chat", express.json(), (req, res) => {
+  const { tenantId } = req.params
+  const { message, userId } = req.body
+
+  if (!message) {
+    return res.status(400).json({ error: "Message é obrigatório" })
+  }
+
+  log("info", "Chat message received", { tenantId, userId, messageLength: message.length })
+
+  res.json({
+    success: true,
+    response: `Olá! Você é do tenant ${tenantId}. Recebi sua mensagem: "${message}". Como posso ajudar?`,
+    tenantId,
+    userId,
+    timestamp: new Date().toISOString()
+  })
+})
+
+app.get("/api/tenant/:tenantId/chat", (req, res) => {
+  const { tenantId } = req.params
+  
+  res.json({
+    messages: [
+      { id: 1, sender: "bot", text: "Bem-vindo! Como posso ajudar?" },
+      { id: 2, sender: "user", text: "Quais são os melhores produtos?" },
+      { id: 3, sender: "bot", text: "Recomendo nossos smartphones e laptops!" }
+    ],
+    tenantId
+  })
+})
+
+// ==================== TRATAMENTO DE ERROS ====================
+app.use((req, res) => {
+  res.status(404).json({
+    error: "Rota não encontrada",
+    path: req.path,
+    method: req.method,
+    availableRoutes: [
+      "GET /",
+      "GET /admin",
+      "GET /health",
+      "GET /api/produtos",
+      "GET /api/pedidos",
+      "POST /api/tenant/:tenantId/chat",
+      "GET /api/tenant/:tenantId/chat"
+    ]
+  })
+})
+
+// ==================== INICIALIZAÇÃO ====================
+app.listen(PORT, "0.0.0.0", () => {
+  log("info", "Servidor Medusa iniciado", { port: PORT, environment: NODE_ENV })
+  console.log(`ready - started server on 0.0.0.0:${PORT}, url: http://localhost:${PORT}`)
+})
+
+process.on("SIGTERM", () => {
+  log("warn", "SIGTERM recebido, encerrando...")
+  process.exit(0)
+})

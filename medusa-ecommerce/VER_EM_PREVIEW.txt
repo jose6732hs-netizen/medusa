@@ -1,0 +1,198 @@
+╔═══════════════════════════════════════════════════════════════════════════╗
+║                   VER O PROJETO EM PREVIEW - GUIA RÁPIDO                   ║
+╚═══════════════════════════════════════════════════════════════════════════╝
+
+Existem 3 formas de ver seu projeto funcionando:
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+OPÇÃO 1: PREVIEW NO V0.APP (MAIS FÁCIL)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ O v0 detecta automaticamente quando você roda o projeto
+
+PASSOS:
+1. Clone/Abra este projeto no v0
+2. Clique no "Version Box" (caixa com número) no TOPO DIREITO
+3. V0 abre o preview automaticamente
+4. Qualquer mudança no código aparece ao vivo (HMR - Hot Module Reload)
+
+VANTAGENS:
+✓ Super fácil - 1 clique
+✓ Mudanças aparecem ao vivo
+✓ Não precisa fazer build
+✓ Já tem DATABASE_URL configurado
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+OPÇÃO 2: PREVIEW LOCALMENTE (SEU COMPUTADOR)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ Roda no seu PC, você tem controle total
+
+PASSOS:
+
+1. Download do Projeto
+   ─────────────────
+   - Clique nos 3 pontinhos ⋮ (canto superior direito)
+   - Selecione "Download ZIP" ou "Clone with GitHub"
+
+
+2. Abra um terminal na pasta do projeto
+   ───────────────────────────────────
+   cd medusa-ecommerce
+
+
+3. Instale as dependências
+   ───────────────────────
+   npm install
+   
+   (Aguarde completar - 1-2 minutos)
+
+
+4. Configure as variáveis de ambiente
+   ──────────────────────────────────
+   cp .env.example .env.local
+   
+   Edite .env.local e configure:
+   DATABASE_URL=postgresql://seu_usuario:sua_senha@ep-xxx.neon.tech/seu_db
+
+
+5. Crie as tabelas do banco
+   ────────────────────────
+   npm run db:push
+   
+   (Isso cria as 11 tabelas no banco)
+
+
+6. Rode o projeto
+   ──────────────
+   npm run dev
+   
+   Output:
+   ✓ Ready in 1.2s
+   ✓ Local:        http://localhost:3000
+   ✓ Environments: .env.local
+
+
+7. Abra no navegador
+   ─────────────────
+   http://localhost:3000
+   
+   ✨ Seu projeto estará rodando!
+
+VANTAGENS:
+✓ Controle total
+✓ Pode debugar com devtools
+✓ Pode testar APIs
+✓ Mudanças aparecem ao vivo
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+OPÇÃO 3: FAZER DEPLOY E VER ONLINE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ Seu projeto estará disponível online para qualquer pessoa
+
+PASSOS (Vercel - Recomendado):
+──────────────────────────────
+
+1. git push para GitHub
+
+2. Abra https://vercel.com/new
+
+3. Clique "Import Git Repository"
+
+4. Selecione seu repositório
+
+5. Configure variáveis de ambiente
+
+6. Clique "Deploy"
+
+✨ Pronto! Seu site estará online em: https://seu-projeto.vercel.app
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+QUAL OPÇÃO ESCOLHER?
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│                                                                           │
+│  🔷 OPÇÃO 1 (V0.APP)      → Quer ver rápido e testar mudanças?         │
+│                            ✓ Mais fácil | ✓ Mais rápido                 │
+│                                                                           │
+│  🔶 OPÇÃO 2 (LOCALHOST)   → Quer testar localmente com controle?        │
+│                            ✓ Completo | ✓ Sem limitações               │
+│                                                                           │
+│  🔸 OPÇÃO 3 (VERCEL)      → Quer mostrar para outras pessoas?          │
+│                            ✓ Online | ✓ Compartilhável                 │
+│                                                                           │
+└─────────────────────────────────────────────────────────────────────────┘
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ERROS COMUNS E SOLUÇÕES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+❌ ERRO: "Cannot find module 'next'"
+✅ SOLUÇÃO: npm install
+
+❌ ERRO: "DATABASE_URL not set"
+✅ SOLUÇÃO: Configure .env.local com seu DATABASE_URL
+
+❌ ERRO: "Port 3000 already in use"
+✅ SOLUÇÃO: npm run dev -- -p 3001
+
+❌ ERRO: "Error connecting to database"
+✅ SOLUÇÃO: Verifique DATABASE_URL e conexão Neon
+
+❌ ERRO: "node_modules not found"
+✅ SOLUÇÃO: rm -rf node_modules && npm install
+
+❌ ERRO: Página branca sem conteúdo
+✅ SOLUÇÃO: Verifique console do navegador (F12)
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+CHECKLIST ANTES DE COMEÇAR
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+☐ Node.js instalado (versão 18+)
+☐ Git instalado (se for usar GitHub)
+☐ Conta Neon criada e DATABASE_URL pronta
+☐ Conta Vercel (opcional, para deploy)
+☐ Editor de código (VS Code, Cursor, etc)
+☐ Acesso a terminal
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PRIMEIROS PASSOS APÓS VER RODANDO
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. Abra http://localhost:3000
+
+2. Clique em "Registrar"
+
+3. Preencha com:
+   - Email: teste@exemplo.com
+   - Senha: SenhaForte123!
+
+4. Clique em "Criar Conta"
+
+5. Faça login com suas credenciais
+
+6. Explore o dashboard:
+   - Clique em "Criar Loja"
+   - Crie sua primeira loja
+   - Adicione produtos
+   - Teste o carrinho
+   - Teste o checkout
+
+
+╔═══════════════════════════════════════════════════════════════════════════╗
+║                                                                             ║
+║  🎉 Tudo pronto! Escolha uma opção acima e comece a ver seu projeto!     ║
+║                                                                             ║
+║  Dúvidas? Leia os outros arquivos de documentação!                       ║
+║                                                                             ║
+╚═══════════════════════════════════════════════════════════════════════════╝
